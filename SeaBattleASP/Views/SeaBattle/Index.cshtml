@@ -1,0 +1,86 @@
+﻿@model SeaBattleASP.Models.SeaBattle
+
+<div style="display: flex; justify-content: left; width: 100%; height: 300px; margin-top: 100px">
+    <div style="width: 300px; height: 300px;">
+        <input type="hidden" id="selectedCells" name="selectedCells" value="" />
+        <table style="border-collapse: collapse; width: 100%; height: 100%;">
+            <tbody>
+                <tr>
+                    <td>
+                        <form method="post" asp-action="PlaceShip">
+                            <div style="display: grid; grid-template-columns: repeat(10, 30px); grid-template-rows: repeat(10, 30px);">
+                                @for (int i = 0; i < SeaBattle.mapSize; i++)
+                                {
+                                    for (int j = 0; j < SeaBattle.mapSize; j++)
+                                    {
+                                        
+                                        <button type="submit" name="cell" value="@i-@j" style="width:30px; height:30px; background-color:@GetCellColor(Model.myMap[i,j]);">
+                                            @if (Model.myMap[i, j] == 1)
+                                            {
+                                                <span>[]</span>
+                                                
+                                                Console.Write(Convert.ToString(i));
+                                                Console.Write(Convert.ToString(j));
+                                            }
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+
+    <div style="width: 300px; height: 300px; margin-left: 50px">
+        <form method="post" asp-action="PlayerShoot">
+            <table style="border-collapse: collapse; width: 100%; height: 100%;">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="display: grid; grid-template-columns: repeat(10, 30px); grid-template-rows: repeat(10, 30px);">
+                                @for (int i = 0; i < SeaBattle.mapSize; i++)
+                                {
+                                    @for (int j = 0; j < SeaBattle.mapSize; j++)
+                                    {
+                                        <button type="submit" name="cell" value="@i-@j" style="width:30px; height:30px; background-color:@GetCellColor(Model.enemyMap[i,j])">
+                                            @if (Model.enemyMap[i, j] == -2)
+                                            {
+                                                <span>X</span>
+                                            }
+                                            else if (Model.enemyMap[i, j] == -1)
+                                            {
+                                                <span>O</span>
+                                            }
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<br>
+
+<form asp-action="BotShoot" method="post">
+    <button type="submit">Shoot</button>
+</form>
+
+@functions {
+    private string GetCellColor(int cellValue)
+    {
+        switch (cellValue)
+        {
+            case -2: return "red"; //hit
+            case -1: return "blue"; //miss
+            case 1: return "gray"; //ship
+            default: return "white"; //cell
+        }
+    }
+}
+
